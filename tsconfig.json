@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {},
+    "useDefineForClassFields": true,
+    "target": "esnext",
+    "module": "esnext",
+    "declarationDir": "dist"
+  },
+  "include": ["src"],
+  "exclude": []
+}

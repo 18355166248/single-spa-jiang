@@ -1,0 +1,54 @@
+{
+  "name": "base-template-rollup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "rimraf dist && rollup --bundleConfigAsCjs  --config rollup.config.js --environment NODE_ENV:development",
+    "build": "rimraf dist && rollup --bundleConfigAsCjs  --config rollup.config.js --environment NODE_ENV:production",
+    "lint": "eslint --ext .js,.ts,.d.ts src/",
+    "prepare": "husky install"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,jsx,less,md,json}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write"
+    ]
+  },
+  "keywords": [],
+  "authors": [
+    "643546122@qq.com"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/lodash-es": "^4.17.7",
+    "@types/node": "^18.15.5",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.36.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.5",
+    "rimraf": "^4.4.0",
+    "rollup": "^3.20.0",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21"
+  }
+}
