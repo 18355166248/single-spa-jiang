@@ -1,5 +1,5 @@
 {
-  "name": "base-template-rollup",
+  "name": "single-spa-jiang",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,15 @@
     "dev": "rimraf dist && rollup --bundleConfigAsCjs  --config rollup.config.js --environment NODE_ENV:development",
     "build": "rimraf dist && rollup --bundleConfigAsCjs  --config rollup.config.js --environment NODE_ENV:production",
     "lint": "eslint --ext .js,.ts,.d.ts src/",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "install:main": "cd examples/main && pnpm i --frozen-lockfile",
+    "install:react18": "cd examples/react18 && pnpm i --frozen-lockfile",
+    "install:vue2": "cd examples/vue2 && pnpm i --frozen-lockfile",
+    "install:all": "run-p install:main install:react18 install:vue2",
+    "dev:main": "cd examples/main && pnpm dev",
+    "dev:react18": "cd examples/react18 && pnpm dev",
+    "dev:vue2": "cd examples/vue2 && pnpm dev",
+    "dev:all": "run-p dev dev:react18 dev:vue2 dev:main"
   },
   "commitlint": {
     "extends": [
@@ -43,6 +51,7 @@
     "eslint": "^8.36.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.8.5",
     "rimraf": "^4.4.0",
     "rollup": "^3.20.0",

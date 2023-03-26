@@ -11,7 +11,7 @@ function resolveFile(filePath) {
   return path.join(__dirname, filePath);
 }
 
-const outputName = 'baseTemplatRollup';
+const outputName = 'single-spa-jiang';
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
@@ -64,5 +64,5 @@ if (isDev) {
   });
 }
 
-const modes = ['esm', 'cjs', 'iife'];
+const modes = ['esm']; // , 'cjs', 'iife'
 export default modes.map((mode) => getOptions(mode));
