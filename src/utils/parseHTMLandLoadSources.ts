@@ -1,5 +1,4 @@
-import { reject } from 'lodash-es';
-import { ApplicationProp } from 'src/types';
+import { ApplicationProp, SourceProps } from 'src/types';
 
 export default function parseHTMLandLoadSources(app: ApplicationProp) {
   return new Promise<void>(async (resolve, reject) => {
@@ -14,7 +13,13 @@ export default function parseHTMLandLoadSources(app: ApplicationProp) {
 
 // 递归解析出 scripts 和 style
 function extractScriptsAndStyle(node: Element, app: ApplicationProp) {
-  console.log(node);
+  if (!node.children.length) return { scripts: [], styles: [] };
+
+  console.log(node.children);
+  const styles: SourceProps[] = [];
+  const scripts: SourceProps[] = [];
+  for (const child of Array.from(node.children)) {
+  }
 }
 
 function loadSourceHTML(url: string) {

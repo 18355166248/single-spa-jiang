@@ -12,6 +12,7 @@ export async function loadApps() {
 
   // 找到所有状态为创立前, 执行创立
   const loadAppList = getAppsStatus(AppStatus.BEFORE_BOOTSTRAP);
+  console.log('loadAppList', loadAppList);
   await Promise.all(loadAppList.map(bootstrapApp));
 
   // 找到所有状态为渲染和销毁的组件, 执行渲染

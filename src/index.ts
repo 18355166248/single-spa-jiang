@@ -1,8 +1,9 @@
-import { isFunction } from 'lodash-es';
-const test = 1;
+export { default as registerApplication } from './application/registerApplication';
+export { default as start } from './start';
+import overwriteHashAndHistory from './navigation/overwriteHashAndHistory';
 
-function getTest() {
-  console.log(22333);
-}
+declare const window: any;
 
-isFunction(getTest) && getTest();
+window.__IS_SINGLE_SPA_JIANG__ = true;
+
+overwriteHashAndHistory();

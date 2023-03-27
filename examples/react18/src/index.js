@@ -39,8 +39,8 @@ export async function unmount(options) {
   );
 }
 
-if (window.__IS_SINGLE_SPA__) {
-  window.__SINGLE_SPA__ = {
+if (window.__IS_SINGLE_SPA_JIANG__) {
+  window['single-spa-jiang-react18'] = {
     mount,
     unmount,
   };

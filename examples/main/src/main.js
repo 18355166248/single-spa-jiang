@@ -17,7 +17,7 @@ render();
 registerApplication({
   name: 'vue2',
   entry: 'http://localhost:8001',
-  activeRule: pathPrefix('/vue'),
+  activeRule: pathPrefix('/vue2'),
   container: $('#micro-app'),
   sandboxConfig: {
     enabled: true,
@@ -60,8 +60,7 @@ registerApplication({
 //   name: 'react18',
 //   entry: 'http://localhost:8002',
 //   activeRule: (location) =>
-//     location.pathname.indexOf('/react') === 0 ||
-//     location.pathname.indexOf('/multiple') === 0,
+//     location.pathname.indexOf('/react18') === 0 ||
 //   container: $('#micro-app'),
 //   sandboxConfig: {
 //     enabled: true,
@@ -73,9 +72,6 @@ start();
 window.name = 'parent';
 console.log(window.name);
 
-window.spaGlobalState.on('vue', () =>
-  alert('父应用监听到 vue 子应用发送了一个全局事件: vue'),
-);
-window.spaGlobalState.on('multiple', () =>
-  alert('父应用监听到 multiple 子应用发送了一个全局事件: multiple'),
-);
+// window.spaGlobalState.on('vue', () =>
+//   alert('父应用监听到 vue 子应用发送了一个全局事件: vue'),
+// );

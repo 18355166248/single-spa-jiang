@@ -15,7 +15,7 @@ let app = null;
 function render(options = {}) {
   const { container } = options;
   router = new VueRouter({
-    base: window.__IS_SINGLE_SPA__ ? '/vue' : '/',
+    base: window.__IS_SINGLE_SPA_JIANG__ ? '/vue' : '/',
     mode: 'history',
     routes,
   });
@@ -62,8 +62,8 @@ export async function unmount() {
   router = null;
 }
 
-if (window.__IS_SINGLE_SPA__) {
-  window.__SINGLE_SPA__ = {
+if (window.__IS_SINGLE_SPA_JIANG__) {
+  window['single-spa-jiang-vue2'] = {
     mount,
     unmount,
   };

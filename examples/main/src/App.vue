@@ -9,9 +9,8 @@
     <div class="mainapp-main">
       <!-- 侧边栏 -->
       <ul class="mainapp-sidemenu">
-        <li @click="push('/vue')">Vue</li>
-        <li @click="push('/react')">React</li>
-        <li @click="push('/multiple')">Multiple</li>
+        <li @click="push('/vue2')">Vue2</li>
+        <li @click="push('/react18')">React18</li>
       </ul>
       <!-- 子应用  -->
       <main class="subapp-container">

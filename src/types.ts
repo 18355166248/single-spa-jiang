@@ -14,6 +14,18 @@ export enum AppStatus {
   UNMOUNT_ERROR = 'UNMOUNT_ERROR',
 }
 
+// script css 资源熟悉
+export interface SourceProps {
+  // 是否是全局资源
+  isGlobal: boolean;
+  // 资源的 url
+  url?: string;
+  // 资源的内容
+  value: string;
+  // script 的类型
+  type?: string | null;
+}
+
 export interface ApplicationProp {
   name: string;
   entry: string;
