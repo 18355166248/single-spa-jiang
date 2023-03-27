@@ -15,10 +15,10 @@ function render() {
 render();
 
 registerApplication({
-  name: 'vue',
-  pageEntry: 'http://localhost:8001',
+  name: 'vue2',
+  entry: 'http://localhost:8001',
   activeRule: pathPrefix('/vue'),
-  container: $('#subapp-viewport'),
+  container: $('#micro-app'),
   sandboxConfig: {
     enabled: true,
     css: true,
@@ -56,29 +56,18 @@ registerApplication({
   },
 });
 
-registerApplication({
-  name: 'react',
-  pageEntry: 'http://localhost:8002',
-  activeRule: (location) =>
-    location.pathname.indexOf('/react') === 0 ||
-    location.pathname.indexOf('/multiple') === 0,
-  container: $('#subapp-viewport'),
-  sandboxConfig: {
-    enabled: true,
-    css: true,
-  },
-});
-
-registerApplication({
-  name: 'multiple',
-  pageEntry: 'http://localhost:8003',
-  activeRule: pathPrefix('/multiple'),
-  container: $('#multiple-app'),
-  sandboxConfig: {
-    enabled: true,
-    css: true,
-  },
-});
+// registerApplication({
+//   name: 'react18',
+//   entry: 'http://localhost:8002',
+//   activeRule: (location) =>
+//     location.pathname.indexOf('/react') === 0 ||
+//     location.pathname.indexOf('/multiple') === 0,
+//   container: $('#micro-app'),
+//   sandboxConfig: {
+//     enabled: true,
+//     css: true,
+//   },
+// });
 
 start();
 window.name = 'parent';

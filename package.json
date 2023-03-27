@@ -2,20 +2,17 @@
   "name": "single-spa-jiang",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/mini-single-spa.esm.js",
+  "module": "dist/mini-single-spa.esm.js",
   "scripts": {
     "dev": "rimraf dist && rollup --bundleConfigAsCjs  --config rollup.config.js --environment NODE_ENV:development",
     "build": "rimraf dist && rollup --bundleConfigAsCjs  --config rollup.config.js --environment NODE_ENV:production",
     "lint": "eslint --ext .js,.ts,.d.ts src/",
     "prepare": "husky install",
-    "install:main": "cd examples/main && pnpm i --frozen-lockfile",
-    "install:react18": "cd examples/react18 && pnpm i --frozen-lockfile",
-    "install:vue2": "cd examples/vue2 && pnpm i --frozen-lockfile",
-    "install:all": "run-p install:main install:react18 install:vue2",
     "dev:main": "cd examples/main && pnpm dev",
     "dev:react18": "cd examples/react18 && pnpm dev",
     "dev:vue2": "cd examples/vue2 && pnpm dev",
-    "dev:all": "run-p dev dev:react18 dev:vue2 dev:main"
+    "dev:all": "run-p dev dev:vue2 dev:main"
   },
   "commitlint": {
     "extends": [

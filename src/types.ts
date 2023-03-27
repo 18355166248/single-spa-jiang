@@ -16,6 +16,7 @@ export enum AppStatus {
 
 export interface ApplicationProp {
   name: string;
+  entry: string;
   activeRule: Function | string;
   loadApp: () => Promise<any>;
   props: AnyObj | Function;
