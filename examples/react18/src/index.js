@@ -4,8 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+window.name = 'react';
+
+let root;
+
 function render() {
-  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(
     <React.StrictMode>
       <App />
@@ -13,34 +17,36 @@ function render() {
   );
 }
 
+export async function bootstrap() {
+  console.log('react18 bootstrap');
+}
+
 export async function mount(options) {
-  window.spaGlobalState.onChange((state, operator, key) => {
-    alert(
-      `react 子应用监听到 spa 全局状态发生了变化: ${JSON.stringify(
-        state,
-      )}，操作: ${operator}，变化的属性: ${key}`,
+  if (window.spaGlobalState) {
+    window.spaGlobalState.onChange((state, operator, key) => {
+      alert(
+        `react 子应用监听到 spa 全局状态发生了变化: ${JSON.stringify(
+          state,
+        )}，操作: ${operator}，变化的属性: ${key}`,
+      );
+    });
+
+    window.spaGlobalState.on('testEvent', () =>
+      alert('react 子应用监听到父应用发送了一个全局事件: testEvent'),
     );
-  });
+  }
 
-  window.spaGlobalState.on('testEvent', () =>
-    alert('react 子应用监听到父应用发送了一个全局事件: testEvent'),
-  );
-
-  console.log('[react16] options from main framework', options);
+  console.log('[react18] options from main framework', options);
   render(options);
 }
 
 export async function unmount(options) {
-  const { container } = options;
-  ReactDOM.unmountComponentAtNode(
-    container
-      ? container.querySelector('#root')
-      : document.querySelector('#root'),
-  );
+  root.unmount();
 }
 
 if (window.__IS_SINGLE_SPA_JIANG__) {
   window['single-spa-jiang-react18'] = {
+    bootstrap,
     mount,
     unmount,
   };

@@ -7,6 +7,8 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/styles/reset.css';
 
+window.name = 'vue';
+
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
@@ -15,7 +17,7 @@ let app = null;
 function render(options = {}) {
   const { container } = options;
   router = new VueRouter({
-    base: window.__IS_SINGLE_SPA_JIANG__ ? '/vue' : '/',
+    base: window.__IS_SINGLE_SPA_JIANG__ ? '/vue2' : '/',
     mode: 'history',
     routes,
   });
@@ -29,27 +31,33 @@ function render(options = {}) {
   console.log(window.name);
 }
 
+export async function bootstrap() {
+  console.log('[vue] vue2 app bootstraped');
+}
+
 export async function mount(options) {
-  // 全局状态、事件不会生成快照，所以要在 mount() 调用后使用
-  window.spaGlobalState.onChange((state, operator, key) => {
-    alert(
-      `vue 子应用监听到 spa 全局状态发生了变化: ${JSON.stringify(
-        state,
-      )}，操作: ${operator}，变化的属性: ${key}`,
-    );
-  });
+  if (window.spaGlobalState) {
+    // 全局状态、事件不会生成快照，所以要在 mount() 调用后使用
+    window.spaGlobalState.onChange((state, operator, key) => {
+      alert(
+        `vue 子应用监听到 spa 全局状态发生了变化: ${JSON.stringify(
+          state,
+        )}，操作: ${operator}，变化的属性: ${key}`,
+      );
+    });
 
-  window.spaGlobalState.onChange((state, operator, key) => {
-    alert(
-      `第二个 onChange: vue 子应用监听到 spa 全局状态发生了变化: ${JSON.stringify(
-        state,
-      )}，操作: ${operator}，变化的属性: ${key}`,
-    );
-  });
+    window.spaGlobalState.onChange((state, operator, key) => {
+      alert(
+        `第二个 onChange: vue 子应用监听到 spa 全局状态发生了变化: ${JSON.stringify(
+          state,
+        )}，操作: ${operator}，变化的属性: ${key}`,
+      );
+    });
 
-  window.spaGlobalState.on('testEvent', () =>
-    alert('vue 子应用监听到父应用发送了一个全局事件: testEvent'),
-  );
+    window.spaGlobalState.on('testEvent', () =>
+      alert('vue 子应用监听到父应用发送了一个全局事件: testEvent'),
+    );
+  }
 
   console.log('[vue] options from main framework', options);
   render(options);
@@ -64,6 +72,7 @@ export async function unmount() {
 
 if (window.__IS_SINGLE_SPA_JIANG__) {
   window['single-spa-jiang-vue2'] = {
+    bootstrap,
     mount,
     unmount,
   };

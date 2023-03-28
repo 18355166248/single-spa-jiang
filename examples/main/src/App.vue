@@ -2,7 +2,7 @@
   <div class="mainapp">
     <!-- 标题栏 -->
     <header class="mainapp-header">
-      <h1>single-spa</h1>
+      <h1>single-spa-jiang</h1>
       <button @click="setGlobalState">给全局状态设置一个属性</button>
       <button @click="emit">发送一个全局事件</button>
     </header>

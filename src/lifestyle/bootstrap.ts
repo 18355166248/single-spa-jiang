@@ -1,12 +1,11 @@
 import { AnyObj, ApplicationProp, AppStatus } from 'src/types';
-import { validteFunction, isPromise, getProps } from 'src/utils/index';
+import { validateFunction, isPromise, getProps } from 'src/utils/index';
 import parseHTMLandLoadSources from 'src/utils/parseHTMLandLoadSources';
 
 declare const window: any;
 
 export default async function bootstrap(app: ApplicationProp) {
   try {
-    console.log(app);
     // 加载 html js css
     await parseHTMLandLoadSources(app);
   } catch (error) {
@@ -14,14 +13,13 @@ export default async function bootstrap(app: ApplicationProp) {
   }
   const { bootstrap, mount, unmount } = await getLifeCycleFuncs(app.name);
 
-  validteFunction('bootstrap', bootstrap);
-  validteFunction('mount', mount);
-  validteFunction('unmount', unmount);
+  validateFunction('bootstrap', bootstrap);
+  validateFunction('mount', mount);
+  validateFunction('unmount', unmount);
 
   app.bootstrap = bootstrap;
   app.mount = mount;
   app.unmount = unmount;
-
   try {
     app.props = getProps(app.props);
   } catch (e) {

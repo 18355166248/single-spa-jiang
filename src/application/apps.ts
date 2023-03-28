@@ -12,7 +12,6 @@ export async function loadApps() {
 
   // 找到所有状态为创立前, 执行创立
   const loadAppList = getAppsStatus(AppStatus.BEFORE_BOOTSTRAP);
-  console.log('loadAppList', loadAppList);
   await Promise.all(loadAppList.map(bootstrapApp));
 
   // 找到所有状态为渲染和销毁的组件, 执行渲染
@@ -27,7 +26,7 @@ function getAppsStatus(status: AppStatus) {
   const result: ApplicationProp[] = [];
 
   apps.forEach((app) => {
-    // 子应用路由匹配上且状态匹配上
+    // 子应用路由匹配上且状态匹配上 且不是 MOUNTED
     if (isActive(app) && app.status === status) {
       switch (app.status) {
         case AppStatus.BEFORE_BOOTSTRAP:

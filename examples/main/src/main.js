@@ -56,17 +56,16 @@ registerApplication({
   },
 });
 
-// registerApplication({
-//   name: 'react18',
-//   entry: 'http://localhost:8002',
-//   activeRule: (location) =>
-//     location.pathname.indexOf('/react18') === 0 ||
-//   container: $('#micro-app'),
-//   sandboxConfig: {
-//     enabled: true,
-//     css: true,
-//   },
-// });
+registerApplication({
+  name: 'react18',
+  entry: 'http://localhost:8002',
+  activeRule: (location) => location.pathname.indexOf('/react18') === 0,
+  container: $('#micro-app'),
+  sandboxConfig: {
+    enabled: true,
+    css: true,
+  },
+});
 
 start();
 window.name = 'parent';

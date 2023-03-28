@@ -6,6 +6,9 @@ export default function registerApplication(app: ApplicationProp) {
     const path = app.activeRule;
     app.activeRule = (location = window.location) => location.pathname === path;
   }
+
+  app.pageBody = '';
+  app.loadURLs = [];
   app.status = AppStatus.BEFORE_BOOTSTRAP;
   apps.push(app);
 }

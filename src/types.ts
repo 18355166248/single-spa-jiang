@@ -32,8 +32,11 @@ export interface ApplicationProp {
   activeRule: Function | string;
   loadApp: () => Promise<any>;
   props: AnyObj | Function;
+  container: HTMLElement;
+  pageBody: string;
+
+  loadURLs: string[];
   status?: AppStatus;
-  container?: HTMLElement;
   bootstrap?: (props: AnyObj) => Promise<any>;
   mount?: (props: AnyObj) => Promise<any>;
   unmount?: (props: AnyObj) => Promise<any>;
