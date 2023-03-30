@@ -29,3 +29,19 @@ const urlReg = /^http(s)?:\/\//;
 export function isURl(url: string) {
   return urlReg.test(url);
 }
+
+export function isObject(obj: any) {
+  return obj !== null && typeof obj === 'object';
+}
+
+export function isFunction(fn: any) {
+  return typeof fn === 'function';
+}
+
+export function nextTick(callback: () => void) {
+  Promise.resolve().then(callback);
+}
+
+export function getObjType(obj: any) {
+  return Object.prototype.toString.call(obj);
+}

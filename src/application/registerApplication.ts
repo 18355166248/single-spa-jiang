@@ -1,5 +1,5 @@
 import { ApplicationProp, AppStatus } from 'src/types';
-import { apps } from './apps';
+import { appMaps } from 'src/utils/application';
 
 export default function registerApplication(app: ApplicationProp) {
   if (typeof app.activeRule === 'string') {
@@ -7,8 +7,15 @@ export default function registerApplication(app: ApplicationProp) {
     app.activeRule = (location = window.location) => location.pathname === path;
   }
 
-  app.pageBody = '';
-  app.loadURLs = [];
-  app.status = AppStatus.BEFORE_BOOTSTRAP;
-  apps.push(app);
+  app = {
+    ...app,
+    pageBody: '',
+    loadURLs: [],
+    status: AppStatus.BEFORE_BOOTSTRAP,
+    styles: [],
+    scripts: [],
+    isFirstLoad: true,
+  };
+
+  appMaps.set(app.name, app);
 }

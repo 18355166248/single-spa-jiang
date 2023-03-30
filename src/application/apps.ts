@@ -1,9 +1,9 @@
 import { ApplicationProp, AppStatus } from 'src/types';
+import { appMaps } from 'src/utils/application';
+import { originalWindow } from 'src/utils/originalEnv';
 import bootstrapApp from '../lifestyle/bootstrap';
 import mountApp from '../lifestyle/mount';
 import unmountApp from '../lifestyle/unmount';
-
-export const apps: ApplicationProp[] = [];
 
 export async function loadApps() {
   // 找到所有运行中的 app, 执行销毁
@@ -25,7 +25,7 @@ export async function loadApps() {
 function getAppsStatus(status: AppStatus) {
   const result: ApplicationProp[] = [];
 
-  apps.forEach((app) => {
+  appMaps.forEach((app) => {
     // 子应用路由匹配上且状态匹配上 且不是 MOUNTED
     if (isActive(app) && app.status === status) {
       switch (app.status) {
@@ -49,6 +49,7 @@ function getAppsStatus(status: AppStatus) {
 
 function isActive(app: ApplicationProp) {
   return (
-    typeof app.activeRule === 'function' && app.activeRule(window.location)
+    typeof app.activeRule === 'function' &&
+    app.activeRule(originalWindow.location)
   );
 }

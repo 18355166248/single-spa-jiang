@@ -71,7 +71,7 @@ export async function unmount() {
 }
 
 if (window.__IS_SINGLE_SPA_JIANG__) {
-  window['single-spa-jiang-vue2'] = {
+  window.__SINGLE_SPA__JIANG__ = {
     bootstrap,
     mount,
     unmount,

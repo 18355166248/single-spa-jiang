@@ -1,6 +1,6 @@
 import { ApplicationProp, SourceProps } from 'src/types';
-import { createElement, removeNode } from './dom';
-import { isURl } from './index';
+import { addStyles, createElement, removeNode } from './dom';
+import { isFunction, isURl } from './index';
 
 const head = document.head;
 
@@ -36,7 +36,7 @@ export default function parseHTMLandLoadSources(app: ApplicationProp) {
         loadStylesSuccess = true;
 
         const list = data.filter((v) => v) as string[];
-        addStyles(list);
+        app.styles = list;
         if (loadStylesSuccess && loadScriptsSuccess) resolve();
       })
       .catch((error) => {
@@ -48,7 +48,7 @@ export default function parseHTMLandLoadSources(app: ApplicationProp) {
         loadScriptsSuccess = true;
 
         const list = data.filter((v) => v) as string[];
-        executeScripts(list);
+        app.scripts = list;
         if (loadStylesSuccess && loadScriptsSuccess) resolve();
       })
       .catch((error) => {
@@ -169,20 +169,6 @@ function loadStyles(styles: SourceProps[]) {
   });
 }
 
-function addStyles(styles: string[] | HTMLStyleElement[]) {
-  styles.forEach((item) => {
-    if (typeof item === 'string') {
-      const style = createElement('style', {
-        type: 'text/css',
-        textContent: item,
-      });
-      head.appendChild(style);
-    } else {
-      head.appendChild(item);
-    }
-  });
-}
-
 // 加载 scripts 代码
 function loadScripts(scripts: SourceProps[]) {
   if (!scripts.length) return [];
@@ -209,11 +195,47 @@ function loadScripts(scripts: SourceProps[]) {
 }
 
 // 执行 javascript
-function executeScripts(scripts: string[]) {
+export function executeScripts(scripts: string[], app: ApplicationProp) {
   try {
     scripts.forEach((code) => {
-      new Function('window', code).call(window, window);
+      if (isFunction(app.loader)) {
+        // @ts-ignore
+        code = app.loader(code);
+      }
+      // ts使用 with 会报错 需要处理下
+      // 将子应用的 js 代码全局 window 环境指向代理 proxyWindow
+      const wrapUpCode = `
+        ;(function(proxyWindow) {
+          with (proxyWindow) {
+            (function(window){${code}\n}).call(proxyWindow, proxyWindow)
+          }
+        })(this)
+      `;
+      new Function('window', wrapUpCode).call(app.sandbox.proxyWindow);
     });
+  } catch (error) {
+    throw error;
+  }
+}
+
+// 远程获取js 并执行
+export async function fetchScriptAndExecute(src: string, app: ApplicationProp) {
+  try {
+    const code = await loadSourceHTML(src);
+    executeScripts([code], app);
+  } catch (error) {
+    throw error;
+  }
+}
+
+// 远程获取style并替换
+export async function fetchStyleAndReplaceStyleContent(
+  style: Node,
+  src: string,
+) {
+  try {
+    const css = await loadSourceHTML(src);
+    style.textContent = css;
   } catch (error) {
     throw error;
   }
