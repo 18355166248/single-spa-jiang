@@ -29,7 +29,7 @@ export default async function bootstrap(app: ApplicationProp) {
   addStyles(app.styles);
   executeScripts(app.scripts, app);
 
-  const { bootstrap, mount, unmount } = await getLifeCycleFuncs(app.name);
+  const { bootstrap, mount, unmount } = await getLifeCycleFuncs(app);
 
   validateFunction('bootstrap', bootstrap);
   validateFunction('mount', mount);
@@ -66,17 +66,15 @@ export default async function bootstrap(app: ApplicationProp) {
     });
 }
 
-function getLifeCycleFuncs(name: string) {
-  const result = window[`single-spa-jiang-${name}`];
-  console.log('/', result);
+function getLifeCycleFuncs(app: ApplicationProp) {
+  const result = app.sandbox.proxyWindow.__SINGLE_SPA__JIANG__;
   if (typeof result === 'function') {
     return result();
   }
   if (typeof result === 'object') {
     return result;
   }
-
   throw new Error(
-    `The micro app must inject the lifecycle("bootstrap" "mount" "unmount") into window['mini-single-spa-${name}']`,
+    `The micro app must inject the lifecycle("bootstrap" "mount" "unmount") into window['single-spa-jiang-${app.name}']`,
   );
 }

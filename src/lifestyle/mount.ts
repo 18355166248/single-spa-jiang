@@ -17,7 +17,10 @@ export default function mount(app: ApplicationProp) {
     app.isFirstLoad = false;
   }
 
-  let result = (app as any).mount(app.props);
+  let result = (app as any).mount({
+    props: app.props,
+    container: app.container,
+  });
   if (!isPromise(result)) {
     result = Promise.resolve(result);
   }

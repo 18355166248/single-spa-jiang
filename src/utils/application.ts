@@ -1,6 +1,5 @@
-import { nextTick } from 'process';
 import { ApplicationProp, AppStatus } from 'src/types';
-import { isFunction } from './index';
+import { isFunction, nextTick } from './index';
 
 export const appMaps = new Map<string, ApplicationProp>();
 

@@ -8,8 +8,13 @@ window.name = 'react';
 
 let root;
 
-function render() {
-  root = ReactDOM.createRoot(document.getElementById('root'));
+function render(options = {}) {
+  const { container } = options;
+  root = ReactDOM.createRoot(
+    container
+      ? container.querySelector('#root')
+      : document.querySelector('#root'),
+  );
   root.render(
     <React.StrictMode>
       <App />
@@ -45,7 +50,7 @@ export async function unmount(options) {
 }
 
 if (window.__IS_SINGLE_SPA_JIANG__) {
-  window['single-spa-jiang-react18'] = {
+  window.__SINGLE_SPA__JIANG__ = {
     bootstrap,
     mount,
     unmount,

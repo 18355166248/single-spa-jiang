@@ -68,7 +68,7 @@ export default class Sandbox {
   // 开启沙箱
   start() {
     const { active } = this;
-    if (!active) return;
+    if (active) return;
 
     this.active = true;
     // 如果当前子应用为第一个
@@ -290,21 +290,21 @@ export default class Sandbox {
   }
   // 创建 window 代理对象
   createProxyWindow(appName: string) {
-    const { microAppWindow, active, injectKeySet } = this;
-    return new Proxy(microAppWindow, {
+    return new Proxy(this.microAppWindow, {
       get(target, key) {
         changeCurrentAppName(appName);
         if (Reflect.has(target, key)) return Reflect.get(target, key);
 
         const result = originalWindow[key];
+
         // window 原生方法 this 执行必须绑定在 window 上, 不然会报错
         return isFunction(result) && needBindOriginalWindow(result)
           ? result.bind(originalWindow)
           : result;
       },
-      set(target, key, value) {
-        if (!active) return true;
-        injectKeySet.add(key);
+      set: (target, key, value) => {
+        if (!this.active) return true;
+        this.injectKeySet.add(key);
         return Reflect.set(target, key, value);
       },
       has: function (target, key) {
@@ -320,13 +320,13 @@ export default class Sandbox {
         const result = Object.keys(target).concat(Object.keys(originalWindow));
         return Array.from(new Set(result));
       },
-      deleteProperty: function (target, property) {
-        injectKeySet.delete(property);
+      deleteProperty: (target, property) => {
+        this.injectKeySet.delete(property);
         return Reflect.deleteProperty(target, property);
       },
       // 用于拦截对象的 Object.defineProperty() 操作
-      defineProperty: function (target, property, descriptor) {
-        if (!active) return true;
+      defineProperty: (target, property, descriptor) => {
+        if (!this.active) return true;
         return Reflect.defineProperty(originalWindow, property, descriptor);
       },
       getOwnPropertyDescriptor: function (target, prop) {
