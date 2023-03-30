@@ -217,3 +217,26 @@ export function executeScripts(scripts: string[], app: ApplicationProp) {
     throw error;
   }
 }
+
+// 远程获取js 并执行
+export async function fetchScriptAndExecute(src: string, app: ApplicationProp) {
+  try {
+    const code = await loadSourceHTML(src);
+    executeScripts([code], app);
+  } catch (error) {
+    throw error;
+  }
+}
+
+// 远程获取style并替换
+export async function fetchStyleAndReplaceStyleContent(
+  style: Node,
+  src: string,
+) {
+  try {
+    const css = await loadSourceHTML(src);
+    style.textContent = css;
+  } catch (error) {
+    throw error;
+  }
+}

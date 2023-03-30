@@ -1,3 +1,4 @@
+import { singleSpaJiang } from 'src/config';
 import { AnyObj } from 'src/types';
 import { originalWindow } from './originalEnv';
 
@@ -41,4 +42,24 @@ export function getWindowEventNames() {
   }
 
   return windowEventNames;
+}
+
+// 判断是否是唯一的 dom
+export function isUniqueElement(selector: string) {
+  return (
+    /^body$/i.test(selector) ||
+    /^head$/i.test(selector) ||
+    /^html$/i.test(selector)
+  );
+}
+
+// 删除子应用的style标签
+export function removeMicroStyles(appName: string) {
+  const styles = document.querySelectorAll(
+    `style[${singleSpaJiang}-name=${appName}]`,
+  );
+  styles.forEach((style) => {
+    removeNode(style);
+  });
+  return styles as unknown as (string | HTMLStyleElement)[];
 }

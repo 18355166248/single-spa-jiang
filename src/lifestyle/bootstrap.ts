@@ -22,6 +22,8 @@ export default async function bootstrap(app: ApplicationProp) {
 
   // 初始化沙箱
   app.sandbox = new Sandbox(app);
+  app.sandbox.start();
+  app.container.innerHTML = app.pageBody;
 
   // 加载样式和执行js
   addStyles(app.styles);
@@ -36,12 +38,18 @@ export default async function bootstrap(app: ApplicationProp) {
   app.bootstrap = bootstrap;
   app.mount = mount;
   app.unmount = unmount;
+
   try {
     app.props = getProps(app.props);
   } catch (e) {
     app.status = AppStatus.BOOTSTRAP_ERROR;
     throw e;
   }
+
+  // 子应用首次加载的脚本执行完就不需要了
+  app.scripts.length = 0;
+  // 记录当前 window 快照 重新挂载子应用时恢复
+  app.sandbox.recordMicroSnapshot();
 
   let result = (app as any).bootstrap(app.props);
   if (!isPromise(result)) {
@@ -50,7 +58,7 @@ export default async function bootstrap(app: ApplicationProp) {
 
   return result
     .then(() => {
-      app.status = AppStatus.BOOTSTRAPPED;
+      triggerAppHook(app, 'bootstrap', AppStatus.BOOTSTRAPPED);
     })
     .catch((e: Error) => {
       app.status = AppStatus.BOOTSTRAP_ERROR;
@@ -60,6 +68,7 @@ export default async function bootstrap(app: ApplicationProp) {
 
 function getLifeCycleFuncs(name: string) {
   const result = window[`single-spa-jiang-${name}`];
+  console.log('/', result);
   if (typeof result === 'function') {
     return result();
   }

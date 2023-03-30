@@ -1,8 +1,10 @@
 import { ApplicationProp, AppStatus } from 'src/types';
+import { triggerAppHook } from 'src/utils/application';
+import { removeMicroStyles } from 'src/utils/dom';
 import { isPromise } from 'src/utils/index';
 
 export default function mount(app: ApplicationProp) {
-  app.status = AppStatus.BEFORE_MOUNT;
+  triggerAppHook(app, 'beforeUnmount', AppStatus.BEFORE_UNMOUNT);
 
   let result = (app as any).unmount(app.props);
   if (!isPromise(result)) {
@@ -11,7 +13,9 @@ export default function mount(app: ApplicationProp) {
 
   return result
     .then(() => {
-      app.status = AppStatus.UNMOUNTED;
+      // app.sandbox.stop();
+      // app.styles = removeMicroStyles(app.name);
+      triggerAppHook(app, 'unmounted', AppStatus.UNMOUNTED);
     })
     .catch((e: Error) => {
       app.status = AppStatus.UNMOUNT_ERROR;

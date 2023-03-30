@@ -1,4 +1,6 @@
 import { ApplicationProp, MicroWindow } from 'src/types';
+import { changeCurrentAppName } from 'src/utils/application';
+import { deepClone } from 'src/utils/deepClone';
 import { getWindowEventNames } from 'src/utils/dom';
 import { isFunction } from 'src/utils/index';
 import {
@@ -9,6 +11,13 @@ import {
   originalWindowAddEventListener,
   originalWindowRemoveEventListener,
 } from 'src/utils/originalEnv';
+import { patchDocument, releaseDocument } from './patchDocument';
+import {
+  documentEventMap,
+  patchDocumentEvents,
+  releaseAppDocumentEvent,
+  releaseDocumentEvents,
+} from './patchDocumentEvents';
 
 /**
  * js 沙箱 用户隔离子应用 window 作用域
@@ -23,10 +32,7 @@ export default class Sandbox {
   // 子应用名称
   private appName = '';
   // 记录子应用第一次 mount 前的 window 快照
-  private windowSnapshot = new Map<
-    string | symbol,
-    Map<string | symbol, any>
-  >();
+  private microSnapshot = new Map<string | symbol, Map<string | symbol, any>>();
   // 子应用是否激活
   private active = false;
   // 子应用向 window 注入的 key
@@ -49,7 +55,10 @@ export default class Sandbox {
   >();
 
   constructor(app: ApplicationProp) {
-    this.windowSnapshot.set('attrs', new Map<string | symbol, any>());
+    this.microSnapshot.set('attrs', new Map<string | symbol, any>());
+    this.microSnapshot.set('windowEvent', new Map<string | symbol, any>());
+    this.microSnapshot.set('onWindowEvent', new Map<string | symbol, any>());
+    this.microSnapshot.set('documentEvent', new Map<string | symbol, any>());
 
     this.appName = app.name;
     this.hijackProperties(); // 劫持 window 属性
@@ -64,10 +73,109 @@ export default class Sandbox {
     this.active = true;
     // 如果当前子应用为第一个
     if (++Sandbox.activeCount === 1) {
-
+      patchDocument();
+      patchDocumentEvents();
     }
   }
+  // 关闭沙箱
+  stop() {
+    const { active } = this;
+    if (!active) return;
+    this.active = false;
 
+    const {
+      injectKeySet,
+      microAppWindow,
+      timeoutSet,
+      intervalSet,
+      idleSet,
+      windowEventMap,
+      onWindowEventMap,
+    } = this;
+
+    for (const key of injectKeySet) {
+      Reflect.deleteProperty(microAppWindow, key);
+    }
+    for (const key of timeoutSet) {
+      originalWindow.clearTimeout(key);
+    }
+    for (const key of intervalSet) {
+      originalWindow.clearInterval(key);
+    }
+    for (const key of idleSet) {
+      originalWindow.cancelIdleCallback(key);
+    }
+    for (const [type, arr] of windowEventMap) {
+      for (const item of arr) {
+        originalWindowRemoveEventListener.call(
+          originalWindow,
+          type as string,
+          item.listener,
+          item.options,
+        );
+      }
+    }
+
+    getWindowEventNames().forEach((eventName) => {
+      const fn = onWindowEventMap.get(eventName);
+      fn &&
+        originalWindowRemoveEventListener.call(originalWindow, eventName, fn);
+    });
+
+    injectKeySet.clear();
+    microAppWindow.clear();
+    timeoutSet.clear();
+    intervalSet.clear();
+    idleSet.clear();
+    windowEventMap.clear();
+    onWindowEventMap.clear();
+    releaseAppDocumentEvent(this.appName);
+
+    // 当所有子应用全部卸载后
+    if (--Sandbox.activeCount === 0) {
+      releaseDocument();
+      releaseDocumentEvents();
+    }
+  }
+  // 记录子应用快照
+  recordMicroSnapshot() {
+    const {
+      microSnapshot,
+      injectKeySet,
+      windowEventMap,
+      onWindowEventMap,
+      microAppWindow,
+      appName,
+    } = this;
+    const recordAttrs = microSnapshot.get('attrs')!;
+    const recordWindowEvent = microSnapshot.get('windowEvent')!;
+    const recordOnWindowEvent = microSnapshot.get('onWindowEvent')!;
+    const recordDocumentEvent = microSnapshot.get('documentEvent')!;
+
+    injectKeySet.forEach((key) => {
+      recordAttrs.set(key, microAppWindow[key]);
+    });
+    windowEventMap.forEach((arr, type) => {
+      recordWindowEvent.set(type, deepClone(arr));
+    });
+    onWindowEventMap.forEach((func, type) => {
+      recordOnWindowEvent.set(type, func);
+    });
+    documentEventMap.get(appName)?.forEach((appMap, type) => {
+      recordDocumentEvent.set(type, deepClone(appMap));
+    });
+  }
+  // 恢复子应用快照
+  restoreMicroSnapshot() {
+    const {
+      microSnapshot,
+      injectKeySet,
+      windowEventMap,
+      onWindowEventMap,
+      microAppWindow,
+      appName,
+    } = this;
+  }
   // 劫持 window 属性
   hijackProperties() {
     const {
@@ -180,12 +288,12 @@ export default class Sandbox {
       });
     });
   }
-
   // 创建 window 代理对象
   createProxyWindow(appName: string) {
     const { microAppWindow, active, injectKeySet } = this;
     return new Proxy(microAppWindow, {
       get(target, key) {
+        changeCurrentAppName(appName);
         if (Reflect.has(target, key)) return Reflect.get(target, key);
 
         const result = originalWindow[key];
@@ -200,6 +308,7 @@ export default class Sandbox {
         return Reflect.set(target, key, value);
       },
       has: function (target, key) {
+        changeCurrentAppName(appName);
         return key in target || key in originalWindow;
       },
       // Object.keys(window)
@@ -207,6 +316,7 @@ export default class Sandbox {
       // Object.getOwnPropertySymbols(window)
       // Reflect.ownKeys(window)
       ownKeys: function (target) {
+        changeCurrentAppName(appName);
         const result = Object.keys(target).concat(Object.keys(originalWindow));
         return Array.from(new Set(result));
       },
@@ -235,7 +345,7 @@ export function needBindOriginalWindow(fn: Function) {
   if (
     fn.toString().startsWith('class') ||
     isBoundFunction(fn) ||
-    (/^[A-Z][\w_]+$/.test(fn.name) && fn.prototype.constructor === fn)
+    (/^[A-Z][\w_]+$/.test(fn.name) && fn.prototype?.constructor === fn)
   ) {
     return false;
   }
