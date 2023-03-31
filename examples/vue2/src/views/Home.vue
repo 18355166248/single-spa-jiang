@@ -9,28 +9,31 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import HelloWorld from '@/components/HelloWorld.vue';
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    HelloWorld,
   },
   data() {
     return {
-      img: require('../assets/logo.png')
-    }
+      img: require('../assets/logo.png'),
+    };
+  },
+  created() {
+    console.log('micro vue window.name =>', window.name);
   },
   methods: {
     sayHi() {
-      alert('hello')
+      alert('hello');
     },
 
     emit() {
-      window.spaGlobalState.emit('vue')
-    }
-  }
-}
+      window.spaGlobalState.emit('vue');
+    },
+  },
+};
 </script>
 
 <style>

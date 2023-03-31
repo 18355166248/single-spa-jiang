@@ -8,11 +8,13 @@ import unmountApp from '../lifestyle/unmount';
 export async function loadApps() {
   // 找到所有运行中的 app, 执行销毁
   const unmountAppList = getAppsStatus(AppStatus.MOUNTED);
-  await Promise.all(unmountAppList.map(unmountApp));
-
   // 找到所有状态为创立前, 执行创立
   const loadAppList = getAppsStatus(AppStatus.BEFORE_BOOTSTRAP);
-  await Promise.all(loadAppList.map(bootstrapApp));
+
+  const unmountPromise = unmountAppList.map(unmountApp);
+  const loadPromise = loadAppList.map(bootstrapApp);
+
+  await Promise.all([...loadPromise, ...unmountPromise]);
 
   // 找到所有状态为渲染和销毁的组件, 执行渲染
   const mountAppList = [

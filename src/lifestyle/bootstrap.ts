@@ -7,12 +7,12 @@ import parseHTMLandLoadSources, {
   executeScripts,
 } from 'src/utils/parseHTMLandLoadSources';
 
-declare const window: any;
-
 export default async function bootstrap(app: ApplicationProp) {
   triggerAppHook(app, 'beforeBootstrap', AppStatus.BEFORE_BOOTSTRAP);
 
   try {
+    // TODO react-router6 存在初始化执行一次 replaceState 的情况 也就是会再次执行 bootstrap 这个时候 window 已经被上一个代理了 bootstrap 再次执行会报错 所以需要更新状态 表示 bootstrap 已经在执行了 
+    app.status = AppStatus.BEFORE_BOOTSTRAP_LOADING;
     // 加载 html js css
     await parseHTMLandLoadSources(app);
   } catch (error) {
