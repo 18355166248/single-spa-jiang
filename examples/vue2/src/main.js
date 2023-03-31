@@ -7,8 +7,6 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/styles/reset.css';
 
-window.name = 'vue';
-
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
@@ -27,8 +25,6 @@ function render(options = {}) {
     store,
     render: (h) => h(App),
   }).$mount(container ? container.querySelector('#app') : '#app');
-
-  console.log(window.name);
 }
 
 export async function bootstrap() {

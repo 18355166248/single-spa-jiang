@@ -1,32 +1,34 @@
 import { loadApps } from 'src/application/apps';
-
-const originalPushState = window.history.pushState;
-const originalReplaceState = window.history.replaceState;
+import {
+  originalPushState,
+  originalReplaceState,
+  originalWindowAddEventListener,
+} from 'src/utils/originalEnv';
 
 export default function overwriteHashAndHistory() {
   window.history.pushState = function (state, title, url) {
     const result = originalPushState.call(this, state, title, url);
-    loadApps()
+    loadApps();
     return result;
   };
 
   window.history.replaceState = function (state, title, url) {
     const result = originalReplaceState.call(this, state, title, url);
-    loadApps()
+    loadApps();
     return result;
   };
 
-  window.addEventListener(
+  originalWindowAddEventListener(
     'popstate',
     () => {
-      console.log('popstate');
+      loadApps();
     },
     true,
   );
-  window.addEventListener(
+  originalWindowAddEventListener(
     'hashchange',
     () => {
-      console.log('hashchange');
+      loadApps();
     },
     true,
   );

@@ -16,8 +16,8 @@ export default function mount(app: ApplicationProp) {
 
   return result
     .then(() => {
-      // app.sandbox.stop();
-      // app.styles = removeMicroStyles(app.name);
+      app.sandbox.stop();
+      app.styles = removeMicroStyles(app.name);
       triggerAppHook(app, 'unmounted', AppStatus.UNMOUNTED);
     })
     .catch((e: Error) => {

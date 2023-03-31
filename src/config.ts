@@ -1,1 +1,1 @@
-export const singleSpaJiang = 'single-pa-jiang';
+export const singleSpaJiang = 'single-spa-jiang';

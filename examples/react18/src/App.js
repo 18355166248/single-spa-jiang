@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import './App.css';
 import { createBrowserRouter, RouterProvider, Link } from 'react-router-dom';
 
@@ -35,6 +36,9 @@ function getBaseName() {
 }
 
 function App() {
+  useEffect(() => {
+    console.log('micro react window.name =>', window.name);
+  }, []);
   return (
     <div>
       <div>React18 + react 16</div>

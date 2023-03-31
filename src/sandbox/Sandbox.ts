@@ -123,7 +123,6 @@ export default class Sandbox {
     });
 
     injectKeySet.clear();
-    microAppWindow.clear();
     timeoutSet.clear();
     intervalSet.clear();
     idleSet.clear();
@@ -175,6 +174,45 @@ export default class Sandbox {
       microAppWindow,
       appName,
     } = this;
+
+    const recordAttrs = microSnapshot.get('attrs')!;
+    const recordWindowEvent = microSnapshot.get('windowEvent')!;
+    const recordOnWindowEvent = microSnapshot.get('onWindowEvent')!;
+    const recordDocumentEvent = microSnapshot.get('documentEvent')!;
+
+    recordAttrs.forEach((value, key) => {
+      injectKeySet.add(key);
+      microAppWindow[key] = deepClone(value);
+    });
+    recordWindowEvent.forEach((arr, key) => {
+      windowEventMap.set(key, deepClone(arr));
+      for (const item of arr) {
+        originalWindowAddEventListener.call(
+          originalWindow,
+          key as string,
+          item.listener,
+          item.options,
+        );
+      }
+    });
+    recordOnWindowEvent.forEach((func, key) => {
+      onWindowEventMap.set(key as string, func);
+      originalWindowAddEventListener.call(originalWindow, key as string, func);
+    });
+
+    const curMap = documentEventMap.get(appName)!;
+    recordDocumentEvent.forEach((arr, key) => {
+      curMap.set(key as string, deepClone(arr));
+
+      for (const item of arr) {
+        originalWindowAddEventListener.call(
+          originalDocument,
+          key as string,
+          item.listener,
+          item.options,
+        );
+      }
+    });
   }
   // 劫持 window 属性
   hijackProperties() {
