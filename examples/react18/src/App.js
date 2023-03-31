@@ -30,7 +30,10 @@ const router = createBrowserRouter(
 
 function getBaseName() {
   if (window.__IS_SINGLE_SPA_JIANG__) {
-    return '/react18';
+    if (window.location.pathname.indexOf('/react18') === 0) {
+      return '/react18';
+    }
+    return '/multiple';
   }
   return '/';
 }

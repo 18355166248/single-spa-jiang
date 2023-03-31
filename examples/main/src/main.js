@@ -19,10 +19,6 @@ registerApplication({
   entry: 'http://localhost:8001',
   activeRule: pathPrefix('/vue2'),
   container: $('#micro-app'),
-  sandboxConfig: {
-    enabled: true,
-    css: true,
-  },
   /**
    * app 生命周期钩子，加载页面资源前触发，只会触发一次
    */
@@ -59,12 +55,17 @@ registerApplication({
 registerApplication({
   name: 'react18',
   entry: 'http://localhost:8002',
-  activeRule: (location) => location.pathname.indexOf('/react18') === 0,
+  activeRule: (location) =>
+    location.pathname.indexOf('/react18') === 0 ||
+    location.pathname.indexOf('/multiple') === 0,
   container: $('#micro-app'),
-  sandboxConfig: {
-    enabled: true,
-    css: true,
-  },
+});
+
+registerApplication({
+  name: 'multiple',
+  entry: 'http://localhost:8003',
+  activeRule: (location) => location.pathname.indexOf('/multiple') === 0,
+  container: $('#multiple-app'),
 });
 
 start();

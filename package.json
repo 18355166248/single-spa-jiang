@@ -12,7 +12,8 @@
     "dev:main": "cd examples/main && pnpm dev",
     "dev:react18": "cd examples/react18 && pnpm dev",
     "dev:vue2": "cd examples/vue2 && pnpm dev",
-    "dev:all": "run-p dev dev:vue2 dev:react18 dev:main"
+    "dev:multiple": "cd examples/multiple && pnpm dev",
+    "dev:all": "run-p dev dev:vue2 dev:react18 dev:multiple dev:main"
   },
   "commitlint": {
     "extends": [

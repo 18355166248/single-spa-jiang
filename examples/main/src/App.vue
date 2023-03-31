@@ -11,10 +11,12 @@
       <ul class="mainapp-sidemenu">
         <li @click="push('/vue2')">Vue2</li>
         <li @click="push('/react18')">React18</li>
+        <li @click="push('/multiple')">multiple</li>
       </ul>
       <!-- 子应用  -->
       <main class="subapp-container">
         <div id="micro-app"></div>
+        <div id="multiple-app"></div>
       </main>
     </div>
   </div>
