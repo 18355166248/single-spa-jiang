@@ -43,9 +43,11 @@ function App() {
     console.log('micro react window.name =>', window.name);
   }, []);
   return (
-    <div>
-      <div>React18 + react 16</div>
-      <RouterProvider router={router} />
+    <div id="App">
+      <div className="App-header">
+        <div>React18 + react 16</div>
+        <RouterProvider router={router} />
+      </div>
     </div>
   );
 }

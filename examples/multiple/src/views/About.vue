@@ -39,7 +39,7 @@
 
 
 <style>
-#app {
+#App {
   color: lightblue;
 }
 </style>

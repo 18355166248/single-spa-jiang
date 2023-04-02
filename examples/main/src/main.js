@@ -59,6 +59,9 @@ registerApplication({
     location.pathname.indexOf('/react18') === 0 ||
     location.pathname.indexOf('/multiple') === 0,
   container: $('#micro-app'),
+  sandboxConfig: {
+    css: true,
+  },
 });
 
 registerApplication({
@@ -66,6 +69,9 @@ registerApplication({
   entry: 'http://localhost:8003',
   activeRule: (location) => location.pathname.indexOf('/multiple') === 0,
   container: $('#multiple-app'),
+  sandboxConfig: {
+    css: true,
+  },
 });
 
 start();
