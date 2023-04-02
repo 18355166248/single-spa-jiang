@@ -24,6 +24,7 @@ import {
   fetchStyleAndReplaceStyleContent,
   globalLoadedURLs,
 } from 'src/utils/parseHTMLandLoadSources';
+import { addCssScoped } from './addCssScoped';
 
 const head = originalDocument.head;
 
@@ -157,12 +158,15 @@ function patchAddChild(
     return addChild(parent, child, referenceNode, type);
   }
 
-  const appName = child.getAttribute(singleSpaJiang);
+  const appName = child.getAttribute(`${singleSpaJiang}-name`);
   const app = getApp(appName);
   if (!appName || !app) return addChild(parent, child, referenceNode, type);
 
   // 所有的 style 放到 head 下
   if (tagName === 'STYLE') {
+    if (app.sandboxConfig.css) {
+      addCssScoped(child, app);
+    }
     return addChild(head, child, referenceNode, type);
   }
   if (tagName === 'SCRIPT') {
@@ -197,7 +201,7 @@ function patchAddChild(
     const style = document.createElement('style');
     style.setAttribute('type', 'text/css');
 
-    fetchStyleAndReplaceStyleContent(style, href);
+    fetchStyleAndReplaceStyleContent(style, href, app);
     return addChild(head, child, referenceNode, type);
   }
 

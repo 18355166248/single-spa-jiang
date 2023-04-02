@@ -1,3 +1,4 @@
+import { addCssScoped } from 'src/sandbox/addCssScoped';
 import { ApplicationProp, SourceProps } from 'src/types';
 import { addStyles, createElement, removeNode } from './dom';
 import { isFunction, isURl } from './index';
@@ -230,12 +231,16 @@ export async function fetchScriptAndExecute(src: string, app: ApplicationProp) {
 
 // 远程获取style并替换
 export async function fetchStyleAndReplaceStyleContent(
-  style: Node,
+  style: HTMLStyleElement,
   src: string,
+  app: ApplicationProp,
 ) {
   try {
     const css = await loadSourceHTML(src);
     style.textContent = css;
+    if (app.sandboxConfig.css) {
+      addCssScoped(style, app);
+    }
   } catch (error) {
     throw error;
   }

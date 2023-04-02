@@ -44,6 +44,10 @@ export interface ApplicationProp {
   styles: (string | HTMLStyleElement)[]; // app 所有的非全局样式, app 加载时需要添加到页面中
   scripts: string[]; // app页面入口上非全局的方法, 只会执行一次
   isFirstLoad: boolean; // 是否是首次加载
+  sandboxConfig: {
+    css: boolean;
+    enable: boolean;
+  };
   // 加载方法
   bootstrap?: (props: AnyObj) => Promise<any>; // 加载页面资源时触发方法 (需要子应用暴露)
   mount?: (props: AnyObj) => Promise<any>; // app 加载方法 (需要子应用暴露)
