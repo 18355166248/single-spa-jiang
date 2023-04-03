@@ -17,5 +17,9 @@ export default function registerApplication(app: ApplicationProp) {
     isFirstLoad: true,
   };
 
+  if (!app.sandboxConfig) {
+    app.sandboxConfig = { enable: true, css: false };
+  }
+
   appMaps.set(app.name, app);
 }
