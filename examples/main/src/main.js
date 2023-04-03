@@ -50,6 +50,9 @@ registerApplication({
     console.log('vue loader');
     return code;
   },
+  sandboxConfig: {
+    css: true,
+  },
 });
 
 registerApplication({
@@ -78,6 +81,11 @@ start();
 window.name = 'parent';
 console.log(window.name);
 
-// window.spaGlobalState.on('vue', () =>
-//   alert('父应用监听到 vue 子应用发送了一个全局事件: vue'),
-// );
+window.spaJiangGloabalState.on('vue2', () =>
+  alert('父应用监听到 vue 子应用发送了一个全局事件: vue2'),
+);
+
+window.spaJiangGloabalState.on('react18', (...args) => {
+  alert('父应用监听到 React 子应用发送了一个全局事件: react18');
+  console.log('其它参数', args);
+});

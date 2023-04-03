@@ -8,7 +8,7 @@ const router = createBrowserRouter(
       path: '/',
       element: (
         <div>
-          <h1>Hello World</h1>
+          <h2>Hello World</h2>
           <Link to="about">About Us</Link>
         </div>
       ),
@@ -42,10 +42,19 @@ function App() {
   useEffect(() => {
     console.log('micro react window.name =>', window.name);
   }, []);
+
+  function globalEmit() {
+    window.spaJiangGloabalState.emit('react18', '其他参数2', '其他参数2', {
+      name: '其他参数3',
+    });
+  }
   return (
     <div id="App">
       <div className="App-header">
-        <div>React18 + react 16</div>
+        <h1>React18 + react 16</h1>
+        <div style={{ marginTop: 10 }}>
+          <button onClick={globalEmit}>发送一个全局事件</button>
+        </div>
         <RouterProvider router={router} />
       </div>
     </div>

@@ -27,8 +27,8 @@ export async function bootstrap() {
 }
 
 export async function mount(options) {
-  if (window.spaGlobalState) {
-    window.spaGlobalState.onChange((state, operator, key) => {
+  if (window.spaJiangGloabalState) {
+    window.spaJiangGloabalState.onChange((state, operator, key) => {
       alert(
         `react 子应用监听到 spa 全局状态发生了变化: ${JSON.stringify(
           state,
@@ -36,7 +36,7 @@ export async function mount(options) {
       );
     });
 
-    window.spaGlobalState.on('testEvent', () =>
+    window.spaJiangGloabalState.on('testEvent', () =>
       alert('react 子应用监听到父应用发送了一个全局事件: testEvent'),
     );
   }

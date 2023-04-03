@@ -37,14 +37,14 @@ export default {
     },
 
     setGlobalState() {
-      window.spaGlobalState.set(
+      window.spaJiangGloabalState.set(
         'msg',
         '父应用在 spa 全局状态上新增了一个 msg 属性',
       );
     },
 
     emit() {
-      window.spaGlobalState.emit(
+      window.spaJiangGloabalState.emit(
         'testEvent',
         '父应用发送了一个全局事件: testEvent',
       );

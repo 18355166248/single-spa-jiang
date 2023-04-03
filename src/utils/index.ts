@@ -1,4 +1,5 @@
 import { AnyObj } from 'src/types';
+import { originalDocument, originalWindow } from './originalEnv';
 
 export function isPromise(fn: any) {
   if (
@@ -44,4 +45,10 @@ export function nextTick(callback: () => void) {
 
 export function getObjType(obj: any) {
   return Object.prototype.toString.call(obj);
+}
+
+export function isInBrowser() {
+  return (
+    typeof originalWindow === 'object' && typeof originalDocument === 'object'
+  );
 }

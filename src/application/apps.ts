@@ -4,6 +4,7 @@ import { originalWindow } from 'src/utils/originalEnv';
 import bootstrapApp from '../lifestyle/bootstrap';
 import mountApp from '../lifestyle/mount';
 import unmountApp from '../lifestyle/unmount';
+import { isFunction } from 'src/utils/index';
 
 export async function loadApps() {
   // 找到所有运行中的 app, 执行销毁
@@ -49,9 +50,9 @@ function getAppsStatus(status: AppStatus) {
   return result;
 }
 
-function isActive(app: ApplicationProp) {
+export function isActive(app: ApplicationProp) {
   return (
-    typeof app.activeRule === 'function' &&
-    app.activeRule(originalWindow.location)
+    isFunction(app.activeRule) &&
+    (app.activeRule as Function)(originalWindow.location)
   );
 }
